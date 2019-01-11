@@ -1,0 +1,75 @@
+{% extends "notes/base.html" %}
+{% block content %}
+<h1 class="mb-3">Notes {{view.kwargs.username}} ({{ page_obj.paginator.count }})</h1>
+	{% for post in posts %}
+    <article class="media content-section">
+      <img class = "rounded-circle article-img" src="{{ post.author.profile.image.url }}">
+  <div class="media-body">
+    <div class="article-metadata">
+      
+      <small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
+      <a class="btn btn-warning btn-sm mt-1 mb-1 mr-4 " href="#">Update</a>
+      <a class="btn btn-primary btn-sm mt-1 mb-1 mr-4" style="color: white" href="#">Share</a>
+      <a class="btn btn-danger btn-sm mt-1 mb-1" href="#">Delete</a>
+      
+    </div>
+    <h2><a class="article-title" href="{% url 'notes-detail' post.id %}">{{ post.title }}</a></h2>
+    <p class="article-content">{{ post.content }}</p>
+  </div>
+</article>
+  {% endfor %}
+    </div>
+   <div class="col-md-4">
+      <div class="content-section position-fixed">
+        <h3>Notification Bar</h3>
+        <p class='text-muted'>Your notifications appear here
+         {% for notify in notifications %}
+    <article class="media content-section">
+            <div class="media-body">
+              <div class="article-metadata">
+                <a class="mr-2" href="#">{{ notify.author }}</a>
+                <small class="text-muted">{{ notify.shared_date }}</small>
+              </div>
+              <h2><a class="article-title" href="#">{{ notify.title }}</a></h2>
+              <p class="article-content">{{ notify.content }}</p>
+            </div>
+          </article>
+  {% endfor %}
+        </p>
+      </div>
+    </div>
+  {% if is_paginated %}
+
+      {% if page_obj.has_previous %}
+
+        <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+
+
+      {% endif %}
+      
+      {% for num in page_obj.paginator.page_range %}
+
+        {% if page_obj.number == num %}
+          
+          <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+
+        <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+
+
+        {% endif %}
+
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+
+        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+
+
+      {% endif %}
+
+  {% endif %}
+{% endblock content %}
